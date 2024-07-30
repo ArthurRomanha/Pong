@@ -5,7 +5,7 @@ const ctx = canvas.getContext('2d');
 const heightRacket = 90;
 const widthRacket = 15;
 
-let positionXRacket1 = widthRacket * 1;
+let positionXRacket1 = widthRacket;
 let positionYRacket1 = canvas.height / 2 - heightRacket / 2;
 
 let positionXRacket2 = canvas.width - widthRacket * 2;
@@ -17,15 +17,17 @@ let positionYBall = canvas.height / 2 - sizeBall / 2;
 
 let loopId;
 
-let chooseSide = Math.round(Math.random());
 let directionBall;
-if (chooseSide == 1) {
-    directionBall = -90;
-}
-if (chooseSide == 0) {
-    directionBall = 90;
-}
 
+let chooseSide = () => {
+    let side = Math.round(Math.random());
+    if (side == 1) {
+        directionBall = -90;
+    }
+    if (side == 0) {
+        directionBall = 90;
+    }
+}
 const drawSprites = () => {
     ctx.fillStyle = 'white';
     ctx.fillRect(positionXRacket1, positionYRacket1, widthRacket, heightRacket);
@@ -55,77 +57,96 @@ const drawGrid = () => {
         ctx.stroke();
     }
 }
+const speedBall = 30
 const moveBall = () => {
     switch (directionBall) {
-        case 90:
-            positionXBall += 30;
-            break;
-        case -90:
-            positionXBall -= 30;
-            break;
         case 45:
-            positionYBall -= 30;
-            positionXBall += 30;
+            positionXBall += speedBall;//move right up
+            positionYBall -= speedBall;
+
             break;
-        case -45:
-            positionYBall += 30;
-            positionXBall -= 30;
+        case 90:
+            positionXBall += speedBall;//move only right
             break;
         case 135:
-            positionYBall += 30;
-            positionXBall += 30;
+            positionXBall += speedBall;
+            positionYBall += speedBall; //move right down
+            break;
+
+        case -45:
+            positionXBall -= speedBall;
+            positionYBall -= speedBall; //move up left
+            break;
+        case -90:
+            positionXBall -= speedBall; //move only left
             break;
         case -135:
-            positionYBall -= 30;
-            positionXBall -= 30;
+            positionXBall -= 30; // move left down
+            positionYBall += 30;
             break;
+
     }
 }
 
-let umTercoHeight = heightRacket / 3;
+let oneThirdHeight = heightRacket / 3;
 
 const ballRacket = () => {
 
     let firstSquareRacket1 = positionYRacket1;//position square up
-    let secondSquareRacket1 = positionYRacket1 + umTercoHeight * 1;//position square center
-    let thirdSquareRacket1 = positionYRacket1 + umTercoHeight * 2;//position square down
+    let secondSquareRacket1 = positionYRacket1 + oneThirdHeight * 1;//position square center
+    let thirdSquareRacket1 = positionYRacket1 + oneThirdHeight * 2;//position square down
 
     //racket2
     let firstSquareRacket2 = positionYRacket2;//position square up
-    let secondSquareRacket2 = positionYRacket2 + umTercoHeight * 1;//position square center
-    let thirdSquareRacket2 = positionYRacket2 + umTercoHeight * 2;//position square down
+    let secondSquareRacket2 = positionYRacket2 + oneThirdHeight * 1;//position square center
+    let thirdSquareRacket2 = positionYRacket2 + oneThirdHeight * 2;//position square down
 
     if ((positionXRacket1 + widthRacket == positionXBall) && (firstSquareRacket1 == positionYBall)) {
-            setDirection(-0.5);
+        directionBall = 45;
     }
     if ((positionXRacket1 + widthRacket == positionXBall) && (secondSquareRacket1 == positionYBall)) {
-            setDirection(-1);
+        directionBall = 90;
     }
     if ((positionXRacket1 + widthRacket == positionXBall) && (thirdSquareRacket1 == positionYBall)) {
-            setDirection(-1.5);
+        directionBall = 135;
     }
     //racket 2
     if ((positionXRacket2 - 30 == positionXBall) && (firstSquareRacket2 == positionYBall)) {
-            setDirection(-0.5);
+        directionBall = -135;
     }
     if ((positionXRacket2 - 30 == positionXBall) && (secondSquareRacket2 == positionYBall)) {
-            setDirection(-1);
+        directionBall = -90;
     }
     if ((positionXRacket2 - 30 == positionXBall) && (thirdSquareRacket2 == positionYBall)) {
-            setDirection(-1.5);
+        directionBall = -45;
     }
 }
 const ballWall = () => {
-    if(positionXBall == 0 || positionXBall == canvas.width){
-        alert("Youu looose!");
-        window.localStorage.refresh();
+    const resetPositions=()=>{
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        positionYRacket1 = canvas.height / 2 - heightRacket / 2;
+        positionYRacket2 = canvas.height / 2 - heightRacket / 2;
+        positionXBall = canvas.width / 2 - sizeBall / 2;
+        positionYBall = canvas.height / 2 - sizeBall / 2;
+        
+        game();
     }
-    if(positionYBall == 0 || positionYBall == canvas.height - 30){
-            setDirection(3);
+    if (positionXBall == -30) { // left and right walls
+        directionBall = 90;
+        resetPositions();
     }
-}
-const setDirection = (angle) => {
-    directionBall = directionBall * angle;
+    if(positionXBall == canvas.width){
+        directionBall = -90;
+        resetPositions();
+    }
+    if (positionYBall == 0 || positionYBall == canvas.height-30) { //up and down walls
+        if (directionBall == 45 || directionBall == -135) {
+            directionBall += 90;
+
+        } else {
+            directionBall -= 90;
+        }
+    }
 }
 const game = () => {
     clearInterval(loopId);
@@ -133,8 +154,8 @@ const game = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawSprites();
-    ballRacket();
     moveBall();
+    ballRacket();
     ballWall();
     drawGrid();
     loopId = setTimeout(() => {
@@ -142,6 +163,7 @@ const game = () => {
     }, 200)
 }
 game();
+chooseSide();
 
 document.addEventListener('keydown', function (tecla) {//racket 1
     if (!(positionYRacket1 <= 5)) {//arrow up
