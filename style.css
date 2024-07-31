@@ -1,9 +1,26 @@
-body{
+body, div{
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    font-size: 20px;
+    font-family: "Montserrat", Verdana, Geneva, Tahoma, sans-serif;
 }
 canvas{
     background-color: black;
+}
+pre{
+    font-size: 40px;
+}
+#endGame{
+    visibility: hidden;
+}
+#endGame button{
+    padding: 10px;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    width: 100%;
+    font-family: "Montserrat", Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
 }

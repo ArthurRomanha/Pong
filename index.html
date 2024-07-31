@@ -7,12 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 </head>
 <body>
     <div>
         <h1>Score: </h1>
     </div>
+    <pre id="score">0  |  0</pre>
     <canvas width="870px" height="570px"></canvas>
+    <div id="endGame">
+        <h1 id="textVictory"></h1>
+        <button id="restart" onclick="restart()">Restart</button>
+    </div>
     <script src="script.js"></script>
 </body>
 <footer></footer>
